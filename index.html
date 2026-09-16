@@ -191,7 +191,7 @@
   <header>
     <p class="kicker">ALBION ONLINE — SEGUIMIENTO DE MERCADO</p>
     <h1>Bitácora de Mercado</h1>
-    <p>Agregá los ítems que operás seguido. Cada vez que abrís sus páginas de mercado en el juego (con el cliente de datos corriendo), volvé acá y presioná Actualizar — vas a ver el precio recién subido, ordenado de mayor a menor por ciudad.</p>
+    <p>Agregá los ítems que operás seguido. Cada vez que abrís sus páginas de mercado en el juego (con el cliente de datos corriendo), volvé acá y presioná Actualizar — vas a ver el precio confirmado. La columna "Sin cambios hace" no mide qué tan vieja es tu consulta: mide hace cuánto nadie ofrece más barato. Si sigue el mismo número después de actualizar, es buena señal — significa que el precio está confirmado y estable, no que algo esté fallando.</p>
   </header>
 
   <div class="panel">
@@ -204,14 +204,23 @@
         <label for="itemLabel">Nombre (opcional)</label>
         <input type="text" id="itemLabel" placeholder="Bolsa T4" autocomplete="off">
       </div>
+      <div class="field">
+        <label for="quality">Calidad</label>
+        <select id="quality">
+          <option value="1">Normal</option>
+          <option value="2">Buena</option>
+          <option value="3">Sobresaliente</option>
+          <option value="4">Excelente</option>
+          <option value="5">Obra maestra</option>
+        </select>
+      </div>
       <button type="submit">+ Agregar a la bitácora</button>
       <button type="button" class="ghost" id="refreshAll">Actualizar todo</button>
       <button type="button" class="ghost" id="resetDefaults">Restaurar los 8 de siempre</button>
     </form>
     <p class="hint">
-      El ID del ítem es el nombre técnico interno del juego (ej: <em>T4_BAG</em>, <em>T6_SWORD</em>, <em>T5_ORE</em>).
-      Podés buscarlo en <a href="https://github.com/ao-data/ao-bin-dumps/blob/master/formatted/items.txt" target="_blank" rel="noopener">este listado</a> si no lo sabés de memoria.
-      Los recursos (madera, mineral, piel, fibra) y sus refinados siempre se consultan en calidad Normal.
+      Para recursos (madera, mineral, piel, fibra) y sus refinados dejá "Normal" siempre, no tienen otras calidades.
+      Para equipo (armas, armaduras, monturas) elegí la calidad que corresponda antes de agregar.
     </p>
     <div class="legend">
       <span><span class="dot fresh"></span>menos de 1h</span>
@@ -353,7 +362,7 @@ function renderTable(idx, rows, _unused, errorMsg, url){
           <th>Venta (min)</th>
           <th>Venta (max)</th>
           <th>Compra (max)</th>
-          <th>Actualizado</th>
+          <th>Sin cambios hace</th>
         </tr>
       </thead>
       <tbody>
@@ -403,6 +412,7 @@ document.getElementById('addForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const idInput = document.getElementById('itemId');
   const labelInput = document.getElementById('itemLabel');
+  const qualitySelect = document.getElementById('quality');
 
   const id = idInput.value.trim();
   if(!id) return;
@@ -410,7 +420,7 @@ document.getElementById('addForm').addEventListener('submit', (e) => {
   watchlist.push({
     id: id,
     label: labelInput.value.trim(),
-    quality: '1'
+    quality: qualitySelect.value
   });
   saveWatchlist();
   idInput.value = '';
